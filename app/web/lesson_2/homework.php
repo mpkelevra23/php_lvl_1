@@ -24,110 +24,126 @@ echo '<hr>';
 
 //2)
 
-$a = rand(0, 15);
-
-switch ($a) {
+switch ($a = rand(0, 15)) {
     case 0;
+        echo $a++ . ', ';
     case 1;
+        echo $a++ . ', ';
     case 2;
+        echo $a++ . ', ';
     case 3;
+        echo $a++ . ', ';
     case 4;
+        echo $a++ . ', ';
     case 5;
+        echo $a++ . ', ';
     case 6;
+        echo $a++ . ', ';
     case 7;
+        echo $a++ . ', ';
     case 8;
+        echo $a++ . ', ';
     case 9;
+        echo $a++ . ', ';
     case 10;
+        echo $a++ . ', ';
     case 11;
+        echo $a++ . ', ';
     case 12;
+        echo $a++ . ', ';
     case 13;
+        echo $a++ . ', ';
     case 14;
+        echo $a++ . ', ';
     case 15;
-        while ($a <= 15) {
-            echo $a++ . ", ";
-        }
+        echo $a;
         break;
 }
 
 echo '<hr>';
 
-//3), 4)
+//3)
 
 $x = rand(1, 99);
 $y = rand(1, 99);
 
-function addition($x = 0, $y = 0)
+function addition($x, $y)
 {
     $z = $x + $y;
 
-    return "при сложение $x и $y получается " . $z;
+    return $z;
 }
 
-function subtraction($x = 0, $y = 0)
+echo "при сложение $x и $y получается " . addition($x, $y) . '<br>';
+
+function subtraction($x, $y)
 {
     $z = $x - $y;
 
-    return "при вычитание $y из $x получается " . $z;
+    return $z;
 }
 
-function multiplication($x = 0, $y = 0)
+echo "при вычитание $y из $x получается " . subtraction($x, $y) . '<br>';
+
+function multiplication($x, $y)
 {
     $z = $x * $y;
 
-    return "при умножение $x на $y получается " . $z;
+    return $z;
 }
 
-function degree($x = 0, $y = 0)
+echo "при умножение $x на $y получается " . multiplication($x, $y) . '<br>';
+
+function degree($x, $y)
 {
     $z = $x / $y;
 
-    return "при деление $x на $y получается " . $z;
+    return $z;
 }
+
+echo "при деление $x на $y получается " . degree($x, $y) . '<br>';
+
+//4)
+
+echo '<hr>';
 
 $operation = rand(1, 4); //решил побаловаться с rand
 
 switch ($operation) {
     case 1;
         $operation = 'addition';
-        addition();
         break;
     case 2;
         $operation = 'subtraction';
-        subtraction();
         break;
     case 3;
         $operation = 'multiplication';
-        multiplication();
         break;
     case 4;
         $operation = 'degree';
-        degree();
         break;
 }
 
-//$operation = 'degree';
-//
-//switch ($operation) {
-//    case 'addition';
-//        addition();
-//        break;
-//    case 'subtraction';
-//        subtraction();
-//        break;
-//    case 'multiplication';
-//        multiplication();
-//        break;
-//    case 'degree';
-//        degree();
-//        break;
-//}
-
-function mathOperation($x, $y, $operation)
+function mathOperation($x, $y, $operation, $z = 0)
 {
-    echo "Есть числа $x и $y" . '<br>' . $operation ($x, $y) . '<br>';
+    switch ($operation) {
+        case 'addition';
+            $z = addition($x, $y);
+            break;
+        case'subtraction';
+            $z = subtraction($x, $y);
+            break;
+        case'multiplication';
+            $z = multiplication($x, $y);
+            break;
+        case'degree';
+            $z = degree($x, $y);
+            break;
+    }
+    return $z;
 }
 
-mathOperation($x, $y, $operation);
+echo "Результат слуйной операции " . mathOperation($x, $y, $operation);
 
 echo '<hr>';
 
