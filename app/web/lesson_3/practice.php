@@ -51,16 +51,16 @@ if (isset($array[2])) {
 
 $users​ = [];
 $users [0] = [
-    'name'  => 'Alex',
+    'name' => 'Alex',
     'email' => 'alex@example.com',
 ];
 $users [1] = [
-    'name'           => 'George',
-    'email'          => 'george@domain.ru',
+    'name' => 'George',
+    'email' => 'george@domain.ru',
     'additionalData' => 'Всем привет!',
 ];
 $users [3] = [
-    'name'  => 'Michael',
+    'name' => 'Michael',
     'email' => 'mich@test.com',
 ];
 
