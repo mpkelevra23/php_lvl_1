@@ -114,7 +114,7 @@ $map = [
 
 foreach ($map as $region => $cities) {
     foreach ($cities as $city)
-        if (mb_substr($city, 0, 1, 'UTF-8') == 'К' || mb_substr($city, 0, 1, 'UTF-8') == 'к') {
+        if (mb_substr($city, 0, 1, 'UTF-8') == 'К' || mb_substr($city, 0, 1, 'UTF-8') == 'к') { //должен быть установлен пакет mbstring sudo apt-get install php7.2-mbstring
             echo "$region:<br>$city<br>";
         }
 }

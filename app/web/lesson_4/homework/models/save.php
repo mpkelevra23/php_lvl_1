@@ -28,12 +28,12 @@ function transfer($string)
         'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
     ];
 
-    return str_replace(' ', '_', strtr(mb_strtolower(trim($string)), $alphabet));
+    return str_replace(' ', '_', strtr(mb_strtolower(trim($string)), $alphabet)); //должен быть установлен пакет mbstring, sudo apt-get install php7.2-mbstring
 }
 
 function createThumb($height, $width, $src, $newsrc, $type)
 {
-    $newimg = imagecreatetruecolor($height, $width);
+    $newimg = imagecreatetruecolor($height, $width); //должен быть установлен пакет функций для работы с изображениями gd, sudo apt-get install php7.2-gd
     switch ($type) {
         case 'image/jpeg':
             $img = imagecreatefromjpeg($src);
