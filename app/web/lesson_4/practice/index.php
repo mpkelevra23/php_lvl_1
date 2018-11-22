@@ -17,8 +17,6 @@ if (!$file) {
     fclose($file);
 }
 
-echo '<hr>';
-
 $file = fopen("file.txt", "r");
 
 if (!$file) {
@@ -29,11 +27,7 @@ if (!$file) {
     fclose($stream);
 }
 
-echo '<hr>';
-
 echo file_get_contents('file.txt');
-
-echo '<hr>';
 
 $string .= "Goodbye world\n";
 

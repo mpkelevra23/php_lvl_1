@@ -75,25 +75,14 @@ if (isset($_POST['send'])) {
 
             createThumb(150, 150, 'img/' . $file, './thumb/' . $file, $type);
 
-            $mysqli = new mysqli($host, $dbUser, $dbPass, $dbName);
-
-            /* проверка соединения */
-            if (mysqli_connect_errno()) {
-                printf("Соединение не удалось: %s\n", mysqli_connect_error());
-                exit();
-            }
-
-            if ($result = $mysqli->query("INSERT INTO `pictures` (`name`, `adress`, `thumb_adress`, `size`) VALUES ('$file', '$adress', '$thumbAdress', '$size')")) {
-
-                $mysqli->close();
-
-                $message = 'Файл успешно загружен';
-
+            try {
+                $dbh = new PDO($dsn, $user, $password);
+                $dbh->query("INSERT INTO `pictures` (`name`, `adress`, `thumb_adress`, `size`) VALUES ('$file', '$adress', '$thumbAdress', '$size')");
                 header("Location: " . $_SERVER['REQUEST_URI']);
-            } else {
-                $message = 'Файл не попал в базу';
+                $message = 'Файл успешно загружен';
+            } catch (PDOException $e) {
+                $message = 'Файл не попал в базу' . $e->getMessage();
             }
-
         }
     } else {
         $message = 'Возможная атака с помощью файловой загрузки!';

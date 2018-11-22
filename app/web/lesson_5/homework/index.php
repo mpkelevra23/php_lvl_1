@@ -14,20 +14,16 @@
 <div class="content">
     <h2>Галерея</h2>
     <div class="pictures">
-        <?php $mysqli = new mysqli($host, $dbUser, $dbPass, $dbName);
-
-        /* проверка соединения */
-        if (mysqli_connect_errno()) {
-            printf("Соединение не удалось: %s\n", mysqli_connect_error());
-            exit();
-        }
-
-        if ($result = $mysqli->query("SELECT `id`, `thumb_adress` FROM `pictures` ORDER BY `view_count` DESC ")) {
-            while ($row = $result->fetch_assoc()) {
+        <?php
+        try {
+            $dbh = new PDO($dsn, $user, $password);
+            foreach ($dbh->query("SELECT `id`, `thumb_adress` FROM `pictures` ORDER BY `view_count` DESC ") as $row) {
                 echo "<a target=\"_blank\" href='image.php?photo=" . $row['id'] . "'> <img src= " . $row['thumb_adress'] . "></a>";
             }
-            $mysqli->close();
-        } ?>
+        } catch (PDOException $e) {
+            echo 'Подключение не удалось: ' . $e->getMessage();
+        }
+        ?>
     </div>
     <div class="load">
         <form enctype="multipart/form-data" method="post" action="">
