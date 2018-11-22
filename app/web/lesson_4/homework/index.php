@@ -23,7 +23,7 @@
             <input type="hidden" name="MAX_FILE_SIZE" value="10000000">
             <input type="file" name="photo">
             <input type="submit" value="Отправить" name="send">
-            <p><?php echo $message ?></p>
+            <p><?= $message ?></p>
         </form>
     </div>
 </div>

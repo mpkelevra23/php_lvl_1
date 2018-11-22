@@ -55,15 +55,14 @@ function createThumb($height, $width, $src, $newsrc, $type)
     }
 }
 
-$type = $_FILES['photo']['type'];
-$size = $_FILES['photo']['size'];
-$name = $_FILES['photo']['name'];
-$error = $_FILES['photo']['error'];
-$file = transfer(basename($name));
-$adress = './img/' . $file;
-$thumbAdress = './thumb/' . $file;
-
 if (isset($_POST['send'])) {
+    $type = $_FILES['photo']['type'];
+    $size = $_FILES['photo']['size'];
+    $name = $_FILES['photo']['name'];
+    $error = $_FILES['photo']['error'];
+    $file = transfer(basename($name));
+    $adress = './img/' . $file;
+    $thumbAdress = './thumb/' . $file;
     if ($error) {
         $message = 'Ошибка загрузки файла!';
     } elseif ($size >= '10000000') {
@@ -71,15 +70,15 @@ if (isset($_POST['send'])) {
     } elseif ($type == 'image/jpeg' ||
         $type == 'image/png' ||
         $type == 'image/gif') {
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], "./img/" . $file)) {
+        if (move_uploaded_file($_FILES['photo']['tmp_name'], "../img/" . $file)) {
 
-            createThumb(150, 150, 'img/' . $file, './thumb/' . $file, $type);
+            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
 
             try {
                 $dbh = new PDO($dsn, $user, $password);
                 $dbh->query("INSERT INTO `pictures` (`name`, `adress`, `thumb_adress`, `size`) VALUES ('$file', '$adress', '$thumbAdress', '$size')");
-                header("Location: " . $_SERVER['REQUEST_URI']);
                 $message = 'Файл успешно загружен';
+                header('Location: ../index.php');
             } catch (PDOException $e) {
                 $message = 'Файл не попал в базу' . $e->getMessage();
             }
@@ -90,5 +89,3 @@ if (isset($_POST['send'])) {
 } else {
     $message = 'Формат файла должен быть JPEG, PNG или GIF';
 }
-
-$images = array_slice(scandir("./thumb"), 2);
