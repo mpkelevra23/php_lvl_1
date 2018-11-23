@@ -55,7 +55,7 @@ function createThumb($height, $width, $src, $newsrc, $type)
     }
 }
 
-if (isset($_POST['send'])) {
+if (isset($_POST['send']) and is_uploaded_file($_FILES['photo']['tmp_name'])) {
     $type = $_FILES['photo']['type'];
     $size = $_FILES['photo']['size'];
     $name = $_FILES['photo']['name'];
@@ -65,8 +65,10 @@ if (isset($_POST['send'])) {
     $thumbAdress = './thumb/' . $file;
     if ($error) {
         $message = 'Ошибка загрузки файла!';
+        header('Location: ../index.php');
     } elseif ($size >= '10000000') {
         $message = 'Файл слишком большой.';
+        header('Location: ../index.php');
     } elseif ($type == 'image/jpeg' ||
         $type == 'image/png' ||
         $type == 'image/gif') {
@@ -81,11 +83,14 @@ if (isset($_POST['send'])) {
                 header('Location: ../index.php');
             } catch (PDOException $e) {
                 $message = 'Файл не попал в базу' . $e->getMessage();
+                header('Location: ../index.php');
             }
         }
     } else {
         $message = 'Возможная атака с помощью файловой загрузки!';
+        header('Location: ../index.php');
     }
 } else {
     $message = 'Формат файла должен быть JPEG, PNG или GIF';
+    header('Location: ../index.php');
 }

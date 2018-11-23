@@ -55,49 +55,42 @@ function createThumb($height, $width, $src, $newsrc, $type)
     }
 }
 
-$type = $_FILES['photo']['type'];
-$size = $_FILES['photo']['size'];
-$name = $_FILES['photo']['name'];
-$error = $_FILES['photo']['error'];
-$file = transfer(basename($name));
-$adress = './img/' . $file;
-$thumbAdress = './thumb/' . $file;
-
-if (isset($_POST['send'])) {
+if (isset($_POST['send']) and is_uploaded_file($_FILES['photo']['tmp_name'])) {
+    $type = $_FILES['photo']['type'];
+    $size = $_FILES['photo']['size'];
+    $name = $_FILES['photo']['name'];
+    $error = $_FILES['photo']['error'];
+    $file = transfer(basename($name));
+    $adress = './img/' . $file;
+    $thumbAdress = './thumb/' . $file;
     if ($error) {
         $message = 'Ошибка загрузки файла!';
+        header('Location: ../index.php');
     } elseif ($size >= '10000000') {
         $message = 'Файл слишком большой.';
+        header('Location: ../index.php');
     } elseif ($type == 'image/jpeg' ||
         $type == 'image/png' ||
         $type == 'image/gif') {
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], "./img/" . $file)) {
+        if (move_uploaded_file($_FILES['photo']['tmp_name'], "../img/" . $file)) {
 
-            createThumb(150, 150, 'img/' . $file, './thumb/' . $file, $type);
+            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
 
-            $mysqli = new mysqli($host, $dbUser, $dbPass, $dbName);
-
-            /* проверка соединения */
-            if (mysqli_connect_errno()) {
-                printf("Соединение не удалось: %s\n", mysqli_connect_error());
-                exit();
-            }
-
-            if ($result = $mysqli->query("INSERT INTO `pictures` (`name`, `adress`, `thumb_adress`, `size`) VALUES ('$file', '$adress', '$thumbAdress', '$size')")) {
-
-                $mysqli->close();
-
+            try {
+                $dbh = new PDO($dsn, $user, $password);
+                $dbh->query("INSERT INTO `pictures` (`name`, `adress`, `thumb_adress`, `size`) VALUES ('$file', '$adress', '$thumbAdress', '$size')");
                 $message = 'Файл успешно загружен';
-
-                header("Location: " . $_SERVER['REQUEST_URI']);
-            } else {
-                $message = 'Файл не попал в базу';
+                header('Location: ../index.php');
+            } catch (PDOException $e) {
+                $message = 'Файл не попал в базу' . $e->getMessage();
+                header('Location: ../index.php');
             }
-
         }
     } else {
         $message = 'Возможная атака с помощью файловой загрузки!';
+        header('Location: ../index.php');
     }
 } else {
     $message = 'Формат файла должен быть JPEG, PNG или GIF';
+    header('Location: ../index.php');
 }

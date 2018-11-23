@@ -14,7 +14,7 @@
             var str = "num_1=" + num_1 + "&num_2=" + num_2 + "&math=" + math;
             $.ajax({
                 type: "POST",
-                url: "count.php",
+                url: "models/count.php",
                 data: str,
                 success: function (msg) {
                     $("#answer").html('Ответ = ' + msg);

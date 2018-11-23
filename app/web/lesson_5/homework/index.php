@@ -3,7 +3,7 @@
 <head>
     <?php
     include 'models/config.php';
-    include 'models/save.php';
+//    include 'models/save.php';
     ?>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
@@ -31,7 +31,7 @@
             <input type="hidden" name="MAX_FILE_SIZE" value="10000000">
             <input type="file" name="photo">
             <input type="submit" value="Отправить" name="send">
-            <p><?= $message ?></p> <!--как выводить сообщения? -->
+<!--            <p>--><?//= $message ?><!--</p> как правильно выводить сообщения?-->
         </form>
     </div>
 </div>

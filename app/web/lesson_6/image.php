@@ -26,34 +26,29 @@
     <?php
     include "models/config.php";
     $id = $_GET['photo'];
-    $mysqli = new mysqli($host, $dbUser, $dbPass, $dbName);
-    if (mysqli_connect_errno()) {
-        printf("Соединение не удалось: %s\n", mysqli_connect_error());
-        exit();
-    }
-    if (($result = $mysqli->query("SELECT `adress`, `view_count` FROM `pictures` WHERE `id` = $id"))
-        && ($mysqli->query("UPDATE `pictures` SET `view_count` = `view_count` + 1 WHERE `id` = $id"))) {
-        $row = $result->fetch_assoc();
-        echo "<img src =" . $row['adress'] . ">";
-        echo "<p> Количество просмотров " . $row['view_count'] . "</p>";
-        $mysqli->close();
+
+    try {
+        $dbh = new PDO($dsn, $user, $password);
+        $dbh->query("UPDATE `pictures` SET `view_count` = `view_count` + 1 WHERE `id` = $id");
+        foreach ($dbh->query("SELECT `adress`, `view_count` FROM `pictures` WHERE `id` = $id") as $row) {
+            echo "<img src =" . $row['adress'] . ">" . "<p> Количество просмотров " . $row['view_count'] . "</p>";
+        }
+    } catch (PDOException $e) {
+        echo 'Подключение не удалось: ' . $e->getMessage();
     }
     ?>
     <div id="comments">
         <?php
         include "models/config.php";
         $id = $_GET['photo'];
-        $mysqli = new mysqli($host, $dbUser, $dbPass, $dbName);
-        if (mysqli_connect_errno()) {
-            printf("Соединение не удалось: %s\n", mysqli_connect_error());
-            exit();
-        }
-        if ($result = $mysqli->query("SELECT `text`, `created_at` FROM `comments` WHERE `pictures_id` = $id")) {
 
-            while ($row = $result->fetch_assoc()) {
+        try {
+            $dbh = new PDO($dsn, $user, $password);
+            foreach ($dbh->query("SELECT `text`, `created_at` FROM `comments` WHERE `pictures_id` = $id") as $row) {
                 echo "<p>" . $row['text'] . "</p>" . "<p>Дата добавления " . $row['created_at'] . "</p>" . "<br>";
             }
-            $mysqli->close();
+        } catch (PDOException $e) {
+            echo 'Подключение не удалось: ' . $e->getMessage();
         }
         ?>
     </div>

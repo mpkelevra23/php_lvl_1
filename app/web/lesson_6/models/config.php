@@ -1,6 +1,5 @@
 <?php
 $dir = '../img';
-$host = 'localhost';
-$dbUser = 'admin';
-$dbPass = '123456';
-$dbName = 'store';
+$dsn = 'mysql:dbname=geekbrains;host=localhost;charset=utf8';
+$user = 'admin';
+$password = '123456';
