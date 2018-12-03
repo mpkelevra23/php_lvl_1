@@ -65,8 +65,8 @@ if (isset($_POST['send']) and is_uploaded_file($_FILES['photo']['tmp_name'])) {
     $name = $_FILES['photo']['name'];
     $error = $_FILES['photo']['error'];
     $file = transfer(basename($name));
-    $adress = './img/' . $file;
-    $thumbAdress = './thumb/' . $file;
+    $address = './img/' . $file;
+    $thumbAddress = './thumb/' . $file;
     if ($error) {
         $message = 'Ошибка загрузки файла!';
         header('Location: ../index.php');
@@ -84,7 +84,7 @@ if (isset($_POST['send']) and is_uploaded_file($_FILES['photo']['tmp_name'])) {
                 $dbh = new PDO($dsn, $user, $password);
                 $dbh->query("INSERT INTO `goods` (`headline`, `description`, `price`) VALUES ('$headline', '$description', '$price')");
                 $id = $dbh->lastInsertId();
-                $dbh->query("INSERT INTO `pictures` (`goods_id`, `name`, `adress`, `thumb_adress`, `size`) VALUES ('$id', '$file', '$adress', '$thumbAdress', '$size')");
+                $dbh->query("INSERT INTO `pictures` (`goods_id`, `name`, `address`, `thumb_address`, `size`) VALUES ('$id', '$file', '$address', '$thumbAddress', '$size')");
                 $message = 'Файл успешно загружен';
                 header('Location: ../index.php');
             } catch (PDOException $e) {

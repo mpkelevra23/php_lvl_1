@@ -22,15 +22,15 @@
 
     try {
         $dbh = new PDO($dsn, $user, $password);
-        foreach ($dbh->query("SELECT `headline`, `adress`, `description`, `price` FROM `goods` INNER JOIN  `pictures` ON `goods`.`id` = `pictures`.`goods_id` WHERE `goods`.`id` = $id") as $row) {
-            echo "<p>" . $row['headline'] . "</p>" . "<img src= " . $row['adress'] . ">"  . "<p>" . $row['description'] . "</p>" . "<p>" . $row['price'] . "</p>";
+        foreach ($dbh->query("SELECT `headline`, `address`, `description`, `price` FROM `goods` INNER JOIN  `pictures` ON `goods`.`id` = `pictures`.`goods_id` WHERE `goods`.`id` = $id") as $row) {
+            echo "<p>" . $row['headline'] . "</p>" . "<img src= " . $row['address'] . ">" . "<p>" . $row['description'] . "</p>" . "<p>" . $row['price'] . "</p>";
         }
     } catch (PDOException $e) {
         echo 'Подключение не удалось: ' . $e->getMessage();
     }
     ?>
-
-    <a href="update.php?good=<?=$id?>">Обновить</a>
+    <a href="update.php?good=<?= $id ?>">Обновить</a>
+    <a href="models/delete.php?good=<?= $id ?>">Удалить</a>
 </div>
 </body>
 </html>
