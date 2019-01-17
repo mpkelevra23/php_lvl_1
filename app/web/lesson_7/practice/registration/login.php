@@ -41,15 +41,15 @@ if (isset($_POST['send']) and !empty($_POST['mail']) and !empty($_POST['password
         }
         if ($query['mail'] == $mail and password_verify($password, $query['password'])) {
             if (isset($_POST['rememberme'])) {
-                session_start([
-                    'cookie_lifetime' => 86400,
-                ]);
+                session_start();
                 $_SESSION['username'] = $query['username'];
                 $_SESSION['id'] = $query['id'];
                 $dbh = null;
                 header('Location: index.php');
             }
-            session_start();
+            session_start([
+                'cookie_lifetime' => 86400,
+            ]);
             $_SESSION['username'] = $query['username'];
             $_SESSION['id'] = $query['id'];
             $dbh = null;
@@ -59,39 +59,6 @@ if (isset($_POST['send']) and !empty($_POST['mail']) and !empty($_POST['password
         $dbh = null;
     } else echo "Введите пароль правильно";
 } else echo 'Все поля должны быть заполнены';
-
-
-//if (isset($_POST['send']) and !empty($_POST['mail'])) {
-//    if (filter_var(strip_tags($_POST['mail']), FILTER_VALIDATE_EMAIL)) {
-//        $mail = strip_tags($_POST['mail']);
-//        try {
-//            $dbh = new PDO($dsn, $dbUser, $dbPassword);
-//            $query = $dbh->query("SELECT `mail` FROM `users` WHERE `mail` = '$mail'")->fetch(PDO::FETCH_ASSOC);
-//        } catch (PDOException $e) {
-//            print "Error!: " . $e->getMessage() . "<br/>";
-//            die();
-//        }
-//        if ($query['mail'] !== $mail) {
-//            $password = password_hash(strip_tags($_POST['password']), PASSWORD_BCRYPT);
-//            $username = strip_tags($_POST['username']);
-//            $dbh->query("INSERT INTO `users`(`username`, `mail`, `password`) VALUES ('$username', '$mail', '$password')");
-//            echo 'Вы успешо зарегестрировались';
-//            $dbh = null;
-//        } else
-//            echo $mail . ' Пользователь с таким почтовым адресом уже зарегестрирован';
-//        $dbh = null;
-//    } else
-//        echo 'Не верно указана почта';
-//    $dbh = null;
-//} else
-//    echo 'Все поля должны быть заполнены';
-//$dbh = null;
-//
-//
-
-//var_dump(isset($_POST['rememberme']));
-//
-//print_r($_POST['rememberme']);
 
 var_dump($_COOKIE);
 

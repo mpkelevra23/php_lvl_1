@@ -27,12 +27,8 @@ if (ini_get("session.use_cookies")) {
 } else header('Location: index.php');
 
 var_dump($params);
-echo "<hr>";
 
-//if (isset($_COOKIE['PHPSESSID'])) {
-//    session_destroy();
-//    header('Location: index.php');
-//} else header('Location: index.php');
+echo "<hr>";
 
 var_dump($_COOKIE);
 

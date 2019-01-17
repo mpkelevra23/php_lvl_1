@@ -34,7 +34,8 @@ if (isset($_COOKIE['PHPSESSID'])) {
     session_start();
     echo "<h1>Добрый день " . $_SESSION['username'] . "! Вы на главное странице!</h1>
     <p><a href='basket.php'>Корзина</a></p>
-    <p><a href=\"logout.php\">Выход</a></p>";
+    <p><a href=\"logout.php\">Выход</a></p>
+    <p><a href=\"profile.php\">Профиль</a></p>";
     try {
         $dbn = new PDO($dsn, $dbUser, $dbPassword);
         foreach ($dbn->query("SELECT `id`, `name`, `price` FROM `products`") as $item) {
@@ -54,9 +55,9 @@ if (isset($_COOKIE['PHPSESSID'])) {
     foreach ($dbn->query("SELECT `id`, `name`, `price` FROM `products`") as $item) {
         echo "<p>" . $item['name'] . "</p> " . "<p>" . $item['price'] . "</p> ";
     }
-    echo "<h1>Войдите или зарегистрируйтесь!</h1>
-<p><a href=\"login.php\">Вход</a></p>
-<p><a href=\"registration.php\">Регистрация</a></p>";
+    echo '<h1>Войдите или зарегистрируйтесь!</h1>
+<p><a href="login.php">Вход</a></p>
+<p><a href="registration.php">Регистрация</a></p>';
     $dbn = null;
 } catch (PDOException $exception) {
     echo 'Ошибка подключения' . $exception->getMessage();

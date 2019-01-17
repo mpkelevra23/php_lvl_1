@@ -8,23 +8,9 @@
 
 include 'models/config.php';
 
-//var_dump($_POST);
-//
-//$added_at = date("Y-m-d H:i:s");
-//
-//var_dump($added_at);
-//
-//echo "<hr>";
-//
-//session_start();
-//
-//var_dump($_SESSION);
-//
-//echo "<hr>";
-//
-//var_dump($_COOKIE);
-
-session_start();
+if (!isset($_COOKIE['PHPSESSID'])) {
+    header('Location: index.php');
+} else session_start();
 
 var_dump($_SESSION);
 
@@ -48,9 +34,6 @@ var_dump(isset($_POST['product']));
 echo "<hr>";
 
 var_dump(isset($_COOKIE['PHPSESSID']));
-
-
-
 
 
 if (isset($_POST['send']) and isset($_POST['product']) and isset($_COOKIE['PHPSESSID'])) {
