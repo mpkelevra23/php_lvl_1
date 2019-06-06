@@ -1,5 +1,43 @@
 <?php
 
+$type = (string)htmlspecialchars(strip_tags($_FILES['photo']['type']));
+$tmpName = (string)htmlspecialchars(strip_tags($_FILES['photo']['tmp_name']));
+$size = (int)htmlspecialchars(strip_tags($_FILES['photo']['size']));
+$error = htmlspecialchars(strip_tags($_FILES['photo']['error']));
+$name = (string)htmlspecialchars(strip_tags($_FILES['photo']['name']));
+
+session_set_cookie_params( 0, '/lesson_4/homework/', 'www.php_lvl_1.local');
+session_name('lesson_4');
+session_start();
+
+if (is_uploaded_file($tmpName)) {
+    if ($error != 0) {
+        $_SESSION['message'] = 'Ошибка загрузки файла! ' . $error;
+        header('Location: ../index.php');
+    } elseif ($size >= '10000000') {
+        $_SESSION['message'] = 'Файл слишком большой.';
+        header('Location: ../index.php');
+    } elseif ($type == 'image/jpeg' ||
+        $type == 'image/png' ||
+        $type == 'image/gif') {
+        $file = transfer(basename($name));
+        if (move_uploaded_file($tmpName, "../img/" . $file)) {
+            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
+            $_SESSION['message'] = 'Файл корректен и был успешно загружен.';
+            header('Location: ../index.php');
+        } else {
+            $_SESSION['message'] = 'Возможная атака с помощью файловой загрузки!';
+            header('Location: ../index.php');
+        }
+    } else {
+        $_SESSION['message'] = 'Формат файла должен быть JPEG, PNG или GIF';
+        header('Location: ../index.php');
+    }
+}else {
+    $_SESSION['message'] = 'Ошибка загрузки файла!';
+    header('Location: ../index.php');
+}
+
 function transfer($string)
 {
     $alphabet = [
@@ -52,26 +90,3 @@ function createThumb($height, $width, $src, $newsrc, $type)
             break;
     }
 }
-
-if (isset($_POST['send'])) {
-    if ($_FILES['photo']['error']) {
-        $message = 'Ошибка загрузки файла!';
-    } elseif (($_FILES['photo']['size']) >= '10000000') {
-        $message = 'Файл слишком большой.';
-    } elseif (($_FILES['photo']['type']) == 'image/jpeg' ||
-        ($_FILES['photo']['type']) == 'image/png' ||
-        ($_FILES['photo']['type']) == 'image/gif') {
-        $file = transfer(basename($_FILES['photo']['name']));
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], "./img/" . $file)) {
-            $type = $_FILES['photo']['type'];
-            createThumb(150, 150, 'img/' . $file, './thumb/' . $file, $type);
-            $message = 'Файл корректен и был успешно загружен.';
-        }
-    } else {
-        $message = 'Возможная атака с помощью файловой загрузки!';
-    }
-} else {
-    $message = 'Формат файла должен быть JPEG, PNG или GIF';
-}
-
-$images = array_slice(scandir("./thumb"), 2);

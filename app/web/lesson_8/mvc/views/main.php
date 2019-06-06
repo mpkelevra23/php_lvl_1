@@ -10,7 +10,7 @@
 <body>
 <h1><?= $title ?></h1>
 <?php
-    include $content;
+include $content;
 ?>
 </body>
 </html>

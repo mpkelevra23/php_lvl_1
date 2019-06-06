@@ -6,68 +6,45 @@
  * Time: 8:35 PM
  */
 
-include 'models/config.php';
-
-var_dump($_COOKIE);
-
-echo "<hr>";
-
-var_dump($_SESSION);
-
-echo "<hr>";
-
-var_dump(isset($_POST['rememberme']));
-
-echo "<hr>";
-
-var_dump(session_get_cookie_params());
-
-echo "<hr>";
-
-if (isset($_COOKIE['PHPSESSID'])) {
+if (isset($_COOKIE['lesson_7'])) {
     header('Location: index.php');
 }
+
+include 'models/config.php';
 
 if (isset($_POST['send']) and !empty($_POST['mail']) and !empty($_POST['password'])) {
     if (filter_var(strip_tags($_POST['mail']), FILTER_VALIDATE_EMAIL)) {
         $mail = strip_tags($_POST['mail']);
         $password = strip_tags($_POST['password']);
         try {
-            $dbn = new PDO($dsn, $dbUser, $dbPassword);
-            $query = $dbn->query("SELECT `id`, `username`, `mail`, `password` FROM `users` WHERE `mail` = '$mail'")->fetch(PDO::FETCH_ASSOC);
+            $dbh = new PDO($dsn, $dbUser, $dbPassword);
+            $query = $dbh->query("SELECT `id`, `username`, `mail`, `password` FROM `users` WHERE `mail` = '$mail'")->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             print "Error!: " . $e->getMessage() . "<br>";
             die();
         }
-        if ($query['mail'] == $mail and password_verify($password, $query['password'])) {
+        if (($query['mail'] == $mail) && (password_verify($password, $query['password']))) {
             if (isset($_POST['rememberme'])) {
+                session_set_cookie_params(86400, '/lesson_7/homework/', 'www.php_lvl_1.local');
+                session_name('lesson_7');
+                session_start();
+                $_SESSION['username'] = $query['username'];
+                $_SESSION['id'] = $query['id'];
+                $dbh = null;
+                header('Location: index.php');
+            } else {
+                session_set_cookie_params(0, '/lesson_7/homework/', 'www.php_lvl_1.local');
+                session_name('lesson_7');
                 session_start();
                 $_SESSION['username'] = $query['username'];
                 $_SESSION['id'] = $query['id'];
                 $dbh = null;
                 header('Location: index.php');
             }
-            session_start([
-                'cookie_lifetime' => 86400,
-            ]);
-            $_SESSION['username'] = $query['username'];
-            $_SESSION['id'] = $query['id'];
-            $dbh = null;
-            header('Location: index.php');
-
-        } else echo "пароль указан не верно";
+        } else echo "Пароль указан не верно";
         $dbh = null;
     } else echo "Введите пароль правильно";
 } else echo 'Все поля должны быть заполнены';
-
-var_dump($_COOKIE);
-
-echo "<hr>";
-
-var_dump($_SESSION);
-
-echo "<hr>";
-
 ?>
 <!doctype html>
 <html lang="en">

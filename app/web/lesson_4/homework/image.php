@@ -7,7 +7,7 @@
 <body>
 <a href="index.php"> Вернуться в галерею </a>
 <div>
-    <img src="<?= "img/" . $_GET['photo'] ?>">
+    <img alt="photo" src="<?= "img/" . $_GET['photo'] ?>">
 </div>
 </body>
 </html>

@@ -33,7 +33,7 @@ $map = [
 ];
 
 foreach ($map as $region => $cities) {
-    echo "$region:</br>" . implode(', ', $cities) . "<p>";
+    echo "<p>$region:</br>" . implode(', ', $cities) . "<p>";
 }
 
 //4)

@@ -5,19 +5,12 @@
  * Date: 12/6/18
  * Time: 5:04 PM
  */
-include 'models/config.php';
 
-var_dump($_COOKIE);
-
-echo "<hr>";
-
-var_dump($_SESSION);
-
-echo "<hr>";
-
-if (isset($_COOKIE['PHPSESSID'])) {
+if (isset($_COOKIE['lesson_7'])) {
     header('Location: index.php');
 }
+
+include 'models/config.php';
 
 if (isset($_POST['send']) and !empty($_POST['mail'])) {
     if (filter_var(strip_tags($_POST['mail']), FILTER_VALIDATE_EMAIL)) {
@@ -44,15 +37,6 @@ if (isset($_POST['send']) and !empty($_POST['mail'])) {
 } else
     echo 'Все поля должны быть заполнены';
 $dbh = null;
-
-var_dump($_COOKIE);
-
-echo "<hr>";
-
-var_dump($_SESSION);
-
-echo "<hr>";
-
 ?>
 
 <!doctype html>
@@ -73,7 +57,7 @@ echo "<hr>";
     <p><input type="email" name="mail"></p>
     <p>Password</p>
     <p><input type="password" name="password"></p>
-    <p><input type="submit" value="Войти" name="send"></p>
+    <p><input type="submit" value="Зарегистрироваться" name="send"></p>
 </form>
 </body>
 </html>

@@ -2,6 +2,101 @@
 
 include 'config.php';
 
+$good_id = $_POST['id'];
+$headline = (string)htmlspecialchars(strip_tags($_POST['headline']));
+$description = (string)htmlspecialchars(strip_tags($_POST['description']));
+$price = htmlspecialchars(strip_tags($_POST['price']));
+
+try {
+    $dbh = new PDO($dsn, $user, $password);
+    $query = $dbh->query("SELECT `id`, `headline`, `description`, `price` FROM `goods` WHERE `id` = '$good_id'")->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo 'Файл не попал в базу' . $e->getMessage();
+}
+
+if ($query['headline'] != $headline) {
+    $headline = $_POST['headline'];
+    try {
+        $dbh->query("UPDATE `goods` SET `headline` = '$headline' WHERE `id` = '$good_id'");
+        header("Location: ../good.php?photo=$good_id");
+    } catch (PDOException $e) {
+        echo 'Файл не попал в базу' . $e->getMessage();
+    }
+}
+
+if ($query['description'] != $description) {
+    $description = $_POST['description'];
+    try {
+        $dbh->query("UPDATE `goods` SET `description` = '$description' WHERE `id` = '$good_id'");
+        header("Location: ../good.php?photo=$good_id");
+    } catch (PDOException $e) {
+        echo 'Файл не попал в базу' . $e->getMessage();
+    }
+}
+
+if ($query['price'] != $price) {
+    $price = $_POST['price'];
+    try {
+        $dbh->query("UPDATE `goods` SET `price` = '$price' WHERE `id` = '$good_id'");
+        header("Location: ../good.php?photo=$good_id");
+    } catch (PDOException $e) {
+        echo 'Файл не попал в базу' . $e->getMessage();
+    }
+}
+
+$dbh = null;
+
+session_set_cookie_params(0, '/lesson_6/store/', 'www.php_lvl_1.local');
+session_name('lesson_6_store');
+session_start();
+
+$_SESSION['message'] = 'Товар успешно обновлён';
+
+if (is_uploaded_file($_FILES['photo']['tmp_name'])) {
+    $type = (string)htmlspecialchars(strip_tags($_FILES['photo']['type']));
+    $tmpName = (string)htmlspecialchars(strip_tags($_FILES['photo']['tmp_name']));
+    $size = (int)htmlspecialchars(strip_tags($_FILES['photo']['size']));
+    $error = htmlspecialchars(strip_tags($_FILES['photo']['error']));
+    $name = (string)htmlspecialchars(strip_tags($_FILES['photo']['name']));
+    if ($error != 0) {
+        $_SESSION['message'] = 'Ошибка загрузки файла! ' . $error;
+        header("Location: ../good.php?photo=$good_id");
+    } elseif ($size >= '10000000') {
+        $_SESSION['message'] = 'Файл слишком большой.';
+        header("Location: ../good.php?photo=$good_id");
+    } elseif ($type == 'image/jpeg' ||
+        $type == 'image/png' ||
+        $type == 'image/gif') {
+        $file = transfer(basename($name));
+        $address = './img/' . $file;
+        $thumbAddress = './thumb/' . $file;
+        if (move_uploaded_file($tmpName, "../img/" . $file)) {
+            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
+            try {
+                $dbh = new PDO($dsn, $user, $password);
+                $select = $dbh->query("SELECT `address`, `thumb_address` FROM `pictures` WHERE `goods_id` = $good_id")->fetch(PDO::FETCH_ASSOC);
+                unlink('../img/' . basename($select['address']));
+                unlink('../thumb/' . basename($select['thumb_address']));
+                $select = null;
+                $dbh->query("UPDATE `pictures` SET `name` = '$file', `address` = '$address', `thumb_address` = '$thumbAddress', `size` = '$size' WHERE `goods_id` = '$good_id'");
+                $dbh = null;
+                $_SESSION['message'] = 'Товар успешно обновлён';
+            } catch (PDOException $e) {
+                $_SESSION['message'] = 'Файл не попал в базу ' . $e->getMessage();
+            }
+            header("Location: ../good.php?photo=$good_id");
+        } else {
+            $_SESSION['message'] = 'Возможная атака с помощью файловой загрузки!';
+            header("Location: ../good.php?photo=$good_id");
+        }
+    } else {
+        $_SESSION['message'] = 'Формат файла должен быть JPEG, PNG или GIF';
+        header("Location: ../good.php?photo=$good_id");
+    }
+} else {
+    header("Location: ../good.php?photo=$good_id");
+}
+
 function transfer($string)
 {
     $alphabet = [
@@ -30,12 +125,12 @@ function transfer($string)
         'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
     ];
 
-    return str_replace(' ', '_', strtr(mb_strtolower(trim($string)), $alphabet));
+    return str_replace(' ', '_', strtr(mb_strtolower(trim($string)), $alphabet)); //должен быть установлен пакет mbstring, sudo apt-get install php7.2-mbstring
 }
 
 function createThumb($height, $width, $src, $newsrc, $type)
 {
-    $newimg = imagecreatetruecolor($height, $width);
+    $newimg = imagecreatetruecolor($height, $width); //должен быть установлен пакет функций для работы с изображениями gd, sudo apt-get install php7.2-gd
     switch ($type) {
         case 'image/jpeg':
             $img = imagecreatefromjpeg($src);
@@ -53,76 +148,4 @@ function createThumb($height, $width, $src, $newsrc, $type)
             imagegif($newimg, $newsrc);
             break;
     }
-}
-
-$good_id = $_POST['id'];
-
-try {
-    $dbh = new PDO($dsn, $user, $password);
-    $query = $dbh->query("SELECT `id`, `headline`, `description`, `price` FROM `goods` WHERE `id` = '$good_id'")->fetch(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo 'Файл не попал в базу' . $e->getMessage();
-}
-
-if ($query['headline'] != $_POST['headline']) {
-    $headline = $_POST['headline'];
-    try {
-        $dbh->query("UPDATE `goods` SET `headline` = '$headline' WHERE `id` = '$good_id'");
-        header("Location: ../good.php?photo=$good_id");
-    } catch (PDOException $e) {
-        echo 'Файл не попал в базу' . $e->getMessage();
-    }
-}
-
-if ($query['description'] != $_POST['description']) {
-    $description = $_POST['description'];
-    try {
-        $dbh->query("UPDATE `goods` SET `description` = '$description' WHERE `id` = '$good_id'");
-        header("Location: ../good.php?photo=$good_id");
-    } catch (PDOException $e) {
-        echo 'Файл не попал в базу' . $e->getMessage();
-    }
-}
-
-if ($query['price'] != $_POST['price']) {
-    $price = $_POST['price'];
-    try {
-        $dbh->query("UPDATE `goods` SET `price` = '$price' WHERE `id` = '$good_id'");
-        header("Location: ../good.php?photo=$good_id");
-    } catch (PDOException $e) {
-        echo 'Файл не попал в базу' . $e->getMessage();
-    }
-}
-
-if (is_uploaded_file($_FILES['photo']['tmp_name'])) {
-    $type = $_FILES['photo']['type'];
-    $size = $_FILES['photo']['size'];
-    $name = $_FILES['photo']['name'];
-    $error = $_FILES['photo']['error'];
-    $file = transfer(basename($name));
-    $address = './img/' . $file;
-    $thumbAddress = './thumb/' . $file;
-    if ($error) {
-        echo 'Ошибка загрузки файла!';
-    } elseif ($size >= '10000000') {
-        echo 'Файл слишком большой.';
-    } elseif ($type == 'image/jpeg' ||
-        $type == 'image/png' ||
-        $type == 'image/gif') {
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], "../img/" . $file)) {
-            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
-            try {
-                $dbh = new PDO($dsn, $user, $password);
-                $dbh->query("UPDATE `pictures` SET `name` = '$file', `address` = '$address', `thumb_address` = '$thumbAddress', `size` = '$size' WHERE `goods_id` = '$good_id'");
-                echo 'Файл успешно загружен';
-                header("Location: ../good.php?photo=$good_id");
-            } catch (PDOException $e) {
-                echo 'Файл не попал в базу' . $e->getMessage();
-            }
-        }
-    } else {
-        echo 'Возможная атака с помощью файловой загрузки!';
-    }
-} else {
-    echo 'Формат файла должен быть JPEG, PNG или GIF';
 }

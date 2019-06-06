@@ -8,24 +8,27 @@
 
 function add_photo($file)
 {
-    if (move_uploaded_file($file['tmp_name'], $file['name'])) {
+    $name = str_replace(' ', '_', (mb_strtolower(trim($file['name']))));
+    if (move_uploaded_file($file['tmp_name'], "data/" . $name)) {
         echo 'Фаил успешно загружен';
     } else echo 'Ошибка';
 }
 
 function gallery()
 {
-    $arr = [
-        ['id' => 1, 'type' => 'jpg'],
-        ['id' => 2, 'type' => 'jpg'],
-        ['id' => 3, 'type' => 'jpg'],
-        ['id' => 4, 'type' => 'jpg'],
-        ['id' => 5, 'type' => 'jpg'],
-    ];
-    return $arr;
+    $data = scandir('data');
+    foreach ($data as $key => $value) {
+        if ($value == '.' || $value == '..') {
+            continue;
+        } else {
+            $arr = explode('.', $value);
+            $list[] = array_combine(['id', 'type'], array_values($arr));
+        }
+    }
+    return $list;
 }
 
-function photo($id)
+function photo($id, $type)
 {
-    return ['id' => $id, 'type' => 'jpg'];
+    return ['id' => $id, 'type' => $type];
 }

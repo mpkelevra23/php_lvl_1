@@ -25,8 +25,8 @@ DROP TABLE IF EXISTS `pictures`;
 CREATE TABLE `pictures` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `adress` varchar(255) NOT NULL,
-  `thumb_adress` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `thumb_address` varchar(255) NOT NULL,
   `size` int(11) DEFAULT NULL,
   `view_count` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)

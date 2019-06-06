@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
+<!--    <link rel="stylesheet" type="text/css" href="css/style.css">-->
     <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
     <meta charset="UTF-8">
     <title>store</title>

@@ -13,9 +13,16 @@
 
     try {
         $dbh = new PDO($dsn, $user, $password);
-        $dbh->query("UPDATE `pictures` SET `view_count` = `view_count` + 1 WHERE `id` = $id");
-        foreach ($dbh->query("SELECT `adress`, `view_count` FROM `pictures` WHERE `id` = $id") as $row) {
-            echo "<img src =" . $row['adress'] . ">" . "<p> Количество просмотров " . $row['view_count'] . "</p>";
+        $query = $dbh->query("SELECT address, `view_count` FROM `pictures` WHERE `id` = $id");
+        if (($query->rowCount()) > 0) {
+            $dbh->query("UPDATE `pictures` SET `view_count` = `view_count` + 1 WHERE `id` = $id");
+            foreach ($query as $row) {
+                echo "<img src =" . $row['address'] . ">" . "<p> Количество просмотров " . $row['view_count'] . "</p>";
+            }
+            $dbh = null;
+        } else {
+            $dbh = null;
+            header('Location: index.php');
         }
     } catch (PDOException $e) {
         echo 'Подключение не удалось: ' . $e->getMessage();

@@ -16,6 +16,7 @@
     try {
         $dbh = new PDO($dsn, $user, $password);
         $query = $dbh->query("SELECT `headline`, `thumb_address`, `description`, `price` FROM `goods` INNER JOIN  `pictures` ON `goods`.`id` = `pictures`.`goods_id` WHERE `goods`.`id` = $id")->fetch(PDO::FETCH_ASSOC);
+        $dbh = null;
     } catch (PDOException $e) {
         echo 'Подключение не удалось: ' . $e->getMessage();
     }

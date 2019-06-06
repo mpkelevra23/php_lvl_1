@@ -64,41 +64,35 @@ echo '<hr>';
 
 //3)
 
-$x = rand(1, 99);
-$y = rand(1, 99);
+$x = rand(-99, 99);
+$y = rand(-99, 99);
 
 function addition($x, $y)
 {
-    $z = $x + $y;
-
-    return $z;
+    return $x + $y;
 }
 
 echo "при сложение $x и $y получается " . addition($x, $y) . '<br>';
 
 function subtraction($x, $y)
 {
-    $z = $x - $y;
-
-    return $z;
+    return $x - $y;
 }
 
 echo "при вычитание $y из $x получается " . subtraction($x, $y) . '<br>';
 
 function multiplication($x, $y)
 {
-    $z = $x * $y;
-
-    return $z;
+    return $x * $y;
 }
 
 echo "при умножение $x на $y получается " . multiplication($x, $y) . '<br>';
 
 function degree($x, $y)
 {
-    $z = $x / $y;
-
-    return $z;
+    if ($y != 0) {
+        return $x / $y;
+    }
 }
 
 echo "при деление $x на $y получается " . degree($x, $y) . '<br>';
@@ -124,23 +118,22 @@ switch ($operation) {
         break;
 }
 
-function mathOperation($x, $y, $operation, $z = 0)
+function mathOperation($x, $y, $operation)
 {
     switch ($operation) {
         case 'addition';
-            $z = addition($x, $y);
+            return addition($x, $y);
             break;
         case'subtraction';
-            $z = subtraction($x, $y);
+            return subtraction($x, $y);
             break;
         case'multiplication';
-            $z = multiplication($x, $y);
+            return multiplication($x, $y);
             break;
         case'degree';
-            $z = degree($x, $y);
+            return degree($x, $y);
             break;
     }
-    return $z;
 }
 
 echo "Результат слуйной операции " . mathOperation($x, $y, $operation);

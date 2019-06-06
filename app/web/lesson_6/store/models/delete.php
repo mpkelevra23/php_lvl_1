@@ -16,6 +16,12 @@ try {
     $dbn->query("DELETE FROM `goods` WHERE `id` = $good");
     unlink('../img/' . basename($select['address']));
     unlink('../thumb/' . basename($select['thumb_address']));
+    $select = null;
+    $dbh = null;
+    session_set_cookie_params(0, '/lesson_6/store/', 'www.php_lvl_1.local');
+    session_name('lesson_6_store');
+    session_start();
+    $_SESSION['message'] = 'Товар удалён';
     header("Location: ../index.php");
 } catch (PDOException $e) {
     echo 'Не удалось удалить файл' . $e->getMessage();

@@ -22,16 +22,6 @@ setcookie("cookie[three]", "cookiethree", time() + 3600);
 setcookie("cookie[two]", "cookietwo", time() + 3600);
 setcookie("cookie[one]", "cookieone", time() + 3600);
 
-setcookie("cookie[three]", "", time() - 3600);
-setcookie("cookie[two]", "", time() - 3600);
-setcookie("cookie[one]", "", time() - 3600);
-
-echo "<hr>";
-
-print_r($_COOKIE);
-
-echo "<hr>";
-
 // после перезагрузки страницы, выведем cookie
 if (isset($_COOKIE['cookie'])) {
     foreach ($_COOKIE['cookie'] as $name => $value) {
@@ -41,17 +31,19 @@ if (isset($_COOKIE['cookie'])) {
     }
 }
 
+setcookie("cookie[three]", "", time() - 3600);
+setcookie("cookie[two]", "", time() - 3600);
+setcookie("cookie[one]", "", time() - 3600);
+
 setcookie('login', 'kelevra23', time() + 3600);
 setcookie('pass', 'qwerty', time() + 3600);
-
-setcookie('login', 'kelevra23', time() - 3600);
-setcookie('pass', 'qwerty', time() - 3600);
 
 if (isset ($_COOKIE['login'])) {
     echo $_COOKIE['login'];
 }
 
+setcookie('login', 'kelevra23', time() - 3600);
+setcookie('pass', 'qwerty', time() - 3600);
 ?>
-
-<br>
-<a href="index.php">INDEX</a>
+<a href="logout.php"><p>Очистить данные cookie</p></a>
+<a href="index.php"><p>Главная</p></a>

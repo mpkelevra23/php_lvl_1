@@ -5,18 +5,20 @@
  * Date: 12/6/18
  * Time: 3:46 PM
  */
+session_set_cookie_params(0, '/lesson_7/practice/', 'www.php_lvl_1.local');
+session_name('lesson_7_practice');
 session_start();
 
-echo 'Добро пожаловать на страницу 2<br />';
+echo '<p>Добро пожаловать на страницу 2</p>';
 
-echo $_SESSION['favcolor'] . '<br>'; // green
-echo $_SESSION['animal'] . '<br>';   // cat
-echo date('Y m d H:i:s', $_SESSION['time']) . '<br>';
+echo '<p>' . $_SESSION['favcolor'] . '</p>';
+echo '<p>' . $_SESSION['animal'] . '</p>';
+echo '<p>' . date('Y m d H:i:s', $_SESSION['time']) . '</p>';
 
-// Можете тут использовать идентификатор сессии, как в page1.php
-echo '<br /><a href="session.php">Установить данные сессии</a>';
-echo '<br /><a href="session3.php">Удалить данные сессии</a>';
+var_dump($_SESSION);
+
+// Можете тут использовать идентификатор сессии, как в session.php
+echo '<a href="session.php"><p>Вернуться назад</p></a>';
+echo '<a href="session3.php"><p>Удалить данные сессии</p></a>';
 ?>
-
-<br>
-<a href="index.php">INDEX</a>
+<a href="index.php"><p>Главная</p></a>

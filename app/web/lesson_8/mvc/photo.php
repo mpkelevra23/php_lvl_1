@@ -8,7 +8,7 @@
 
 include 'models/gallery.php';
 
-$img = photo($_GET['id']);
+$img = photo($_GET['id'], $_GET['type']);
 $title = 'Show full version';
 
 $content = 'views/content_photo.php';

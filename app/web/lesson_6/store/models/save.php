@@ -2,6 +2,57 @@
 
 include 'config.php';
 
+session_set_cookie_params(0, '/lesson_6/store/', 'www.php_lvl_1.local');
+session_name('lesson_6_store');
+session_start();
+
+if (is_uploaded_file($_FILES['photo']['tmp_name'])) {
+    $type = (string)htmlspecialchars(strip_tags($_FILES['photo']['type']));
+    $tmpName = (string)htmlspecialchars(strip_tags($_FILES['photo']['tmp_name']));
+    $size = (int)htmlspecialchars(strip_tags($_FILES['photo']['size']));
+    $error = htmlspecialchars(strip_tags($_FILES['photo']['error']));
+    $name = (string)htmlspecialchars(strip_tags($_FILES['photo']['name']));
+    $headline = (string)htmlspecialchars(strip_tags($_POST['headline']));
+    $description = htmlspecialchars(strip_tags($_POST['description']));
+    $price = htmlspecialchars(strip_tags($_POST['price']));
+    if ($error != 0) {
+        $_SESSION['message'] = 'Ошибка загрузки файла! ' . $error;
+        header('Location: ../index.php');
+    } elseif ($size >= '10000000') {
+        $_SESSION['message'] = 'Файл слишком большой.';
+        header('Location: ../index.php');
+    } elseif ($type == 'image/jpeg' ||
+        $type == 'image/png' ||
+        $type == 'image/gif') {
+        $file = transfer(basename($name));
+        $address = './img/' . $file;
+        $thumbAddress = './thumb/' . $file;
+        if (move_uploaded_file($tmpName, "../img/" . $file)) {
+            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
+            try {
+                $dbh = new PDO($dsn, $user, $password);
+                $dbh->query("INSERT INTO `goods` (`headline`, `description`, `price`) VALUES ('$headline', '$description', '$price')");
+                $id = $dbh->lastInsertId();
+                $dbh->query("INSERT INTO `pictures` (`goods_id`, `name`, `address`, `thumb_address`, `size`) VALUES ('$id', '$file', '$address', '$thumbAddress', '$size')");
+                $dbh = null;
+                $_SESSION['message'] = 'Товар успешно создан';
+            } catch (PDOException $e) {
+                $_SESSION['message'] = 'Файл не попал в базу ' . $e->getMessage();
+            }
+            header('Location: ../index.php');
+        } else {
+            $_SESSION['message'] = 'Возможная атака с помощью файловой загрузки!';
+            header('Location: ../index.php');
+        }
+    } else {
+        $_SESSION['message'] = 'Формат файла должен быть JPEG, PNG или GIF';
+        header('Location: ../index.php');
+    }
+} else {
+    $_SESSION['message'] = 'Ошибка загрузки файла!';
+    header('Location: ../index.php');
+}
+
 function transfer($string)
 {
     $alphabet = [
@@ -30,12 +81,12 @@ function transfer($string)
         'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
     ];
 
-    return str_replace(' ', '_', strtr(mb_strtolower(trim($string)), $alphabet));
+    return str_replace(' ', '_', strtr(mb_strtolower(trim($string)), $alphabet)); //должен быть установлен пакет mbstring, sudo apt-get install php7.2-mbstring
 }
 
 function createThumb($height, $width, $src, $newsrc, $type)
 {
-    $newimg = imagecreatetruecolor($height, $width);
+    $newimg = imagecreatetruecolor($height, $width); //должен быть установлен пакет функций для работы с изображениями gd, sudo apt-get install php7.2-gd
     switch ($type) {
         case 'image/jpeg':
             $img = imagecreatefromjpeg($src);
@@ -53,50 +104,4 @@ function createThumb($height, $width, $src, $newsrc, $type)
             imagegif($newimg, $newsrc);
             break;
     }
-}
-
-$headline = $_POST['headline'];
-$description = $_POST['description'];
-$price = $_POST['price'];
-
-if (isset($_POST['send']) and is_uploaded_file($_FILES['photo']['tmp_name'])) {
-    $type = $_FILES['photo']['type'];
-    $size = $_FILES['photo']['size'];
-    $name = $_FILES['photo']['name'];
-    $error = $_FILES['photo']['error'];
-    $file = transfer(basename($name));
-    $address = './img/' . $file;
-    $thumbAddress = './thumb/' . $file;
-    if ($error) {
-        $message = 'Ошибка загрузки файла!';
-        header('Location: ../index.php');
-    } elseif ($size >= '10000000') {
-        $message = 'Файл слишком большой.';
-        header('Location: ../index.php');
-    } elseif ($type == 'image/jpeg' ||
-        $type == 'image/png' ||
-        $type == 'image/gif') {
-        if (move_uploaded_file($_FILES['photo']['tmp_name'], "../img/" . $file)) {
-
-            createThumb(150, 150, '../img/' . $file, '../thumb/' . $file, $type);
-
-            try {
-                $dbh = new PDO($dsn, $user, $password);
-                $dbh->query("INSERT INTO `goods` (`headline`, `description`, `price`) VALUES ('$headline', '$description', '$price')");
-                $id = $dbh->lastInsertId();
-                $dbh->query("INSERT INTO `pictures` (`goods_id`, `name`, `address`, `thumb_address`, `size`) VALUES ('$id', '$file', '$address', '$thumbAddress', '$size')");
-                $message = 'Файл успешно загружен';
-                header('Location: ../index.php');
-            } catch (PDOException $e) {
-                $message = 'Файл не попал в базу' . $e->getMessage();
-                header('Location: ../index.php');
-            }
-        }
-    } else {
-        $message = 'Возможная атака с помощью файловой загрузки!';
-        header('Location: ../index.php');
-    }
-} else {
-    $message = 'Формат файла должен быть JPEG, PNG или GIF';
-    header('Location: ../index.php');
 }
