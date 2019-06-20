@@ -25,7 +25,7 @@
     session_start();
 
     if (isset($_SESSION['message'])) {
-        echo '<h1>' . $_SESSION['message'] . '</h1>';fdfg
+        echo '<h1>' . $_SESSION['message'] . '</h1>';
         session_unset();
     }
 
