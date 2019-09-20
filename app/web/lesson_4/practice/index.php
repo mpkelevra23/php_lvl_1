@@ -22,13 +22,13 @@ $file = fopen("file.txt", "r");
 if (!$file) {
     echo "Ошибка открытия файла";
 } else {
-    $buffer = fread($stream, filesize($file));
+    $buffer = fread($file, filesize('file.txt'));
     echo $buffer;
-    fclose($stream);
+    fclose($file);
 }
 
 echo file_get_contents('file.txt');
 
-$string .= "Goodbye world\n";
+$string = "Goodbye world\n";
 
 file_put_contents('file.txt', $string, FILE_APPEND);
