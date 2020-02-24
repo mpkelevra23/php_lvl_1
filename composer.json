@@ -1,0 +1,12 @@
+{
+        "authors": [
+        {
+            "name": "mpkelevra23",
+            "email": "mpkelevra23@gmail.com"
+        }
+    ],
+    "require": {
+        "ext-pdo": "*",
+                "kint-php/kint": "^3.3"
+    }
+}
